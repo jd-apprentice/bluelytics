@@ -41,7 +41,6 @@ type Response struct {
 }
 
 const (
-	dolarAPI  = "https://api.bluelytics.com.ar/v2/latest"
 	sackEmoji = "💰"
 	arsLabel  = "ARS"
 )
@@ -143,11 +142,15 @@ func main() {
 		log.Fatalf("Failed to get secrets: %v", err)
 	}
 
+	var config map[string]string
+
 	for _, secret := range secrets {
-		fmt.Printf("SecretKey: %s, SecretValue: %s\n", secret.SecretKey, secret.SecretValue)
+		config = map[string]string{
+			secret.SecretKey: secret.SecretValue,
+		}
 	}
 
-	data, err := getData(dolarAPI)
+	data, err := getData(config["API_ENDPOINT"])
 
 	if err != nil {
 		log.Fatalf("Error fetching data: %v", err)
