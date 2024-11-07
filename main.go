@@ -45,8 +45,21 @@ const (
 	arsLabel  = "ARS"
 )
 
+func getUserHome() string {
+	home, err := os.UserHomeDir()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return home
+}
+
 func initDotEnv() {
-	err := godotenv.Load(".env")
+
+	home := getUserHome()
+
+	err := godotenv.Load(home + "/.config/infisical/.env")
 	if err != nil {
 		log.Fatalf("Error loading .env file: %v", err)
 	}
