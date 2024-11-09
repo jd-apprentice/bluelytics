@@ -12,8 +12,12 @@ func main() {
 
 	fn.InitDotEnv()
 
-	var projectId = os.Getenv("INFISICAL_PROJECT_ID")
+	var projectId = os.Getenv("INFISICAL_WORKSPACE_ID")
 	var environment = os.Getenv("INFISICAL_ENVIRONMENT")
+
+	if environment == "" {
+		environment = "dev"
+	}
 
 	secrets, err := fn.GetSecrets(projectId, environment)
 
