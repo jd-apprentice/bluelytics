@@ -23,7 +23,7 @@ jobs:
 
     - name: Install dependencies
       run: sudo apt update && sudo apt install -y jq curl
-      
+
     - name: Get Access Token
       id: access-token
       run: |
@@ -34,14 +34,14 @@ jobs:
             "clientId": "'${{ secrets.INFISICAL_CLIENT_ID }}'",
             "clientSecret": "'${{ secrets.INFISICAL_CLIENT_SECRET }}'"
           }' | jq -r .accessToken)
-        echo "$TOKEN" > "$GITHUB_OUTPUT"
+        echo "access_token=$TOKEN" >> $GITHUB_ENV
     
     - name: Get all environment variables
       id: env
       run: |
         SECRETS=$(curl --request GET \
           --url "https://us.infisical.com/api/v3/secrets/raw?workspaceId=${{ secrets.INFISICAL_WORKSPACE_ID }}&environment=${{ env.ENVIRONMENT }}" \
-          --header 'Authorization: Bearer ${{ steps.access-token.outputs.token }}' | jq -r .secrets)
+          --header 'Authorization: Bearer ${{ env.access_token }}' | jq -r .secrets)
           
         for secret in $SECRETS; do
           secret_name=$(echo $secret | jq -r .secretKey)
