@@ -6,9 +6,6 @@ on:
   pull_request:
     branches: [ "master", "develop" ]
 
-env:
-  ENVIRONMENT: if [ ${{ github.ref }} == 'refs/heads/develop' ]; then echo 'dev'; else echo 'prod'; fi
-
 jobs:
 
   build:
@@ -39,6 +36,10 @@ jobs:
     - name: Get all environment variables
       id: env
       run: |
+        echo "ENVIRONMENT=dev" >> $GITHUB_ENV
+        if [ ! "${GITHUB_REF}" == "refs/heads/develop" ]; then
+          echo "ENVIRONMENT=prod" >> $GITHUB_ENV
+        fi
         curl --request GET \
           --url "https://us.infisical.com/api/v3/secrets/raw?workspaceId=${{ secrets.INFISICAL_WORKSPACE_ID }}&environment=${{ env.ENVIRONMENT }}" \
           --header 'Authorization: Bearer ${{ env.access_token }}' \
