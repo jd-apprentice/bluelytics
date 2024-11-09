@@ -8,7 +8,6 @@ build: clean
 
 generate_config:
 	mkdir -p ~/.config/infisical
-	touch ~/.config/infisical/.env
 	ln -s $(PWD)/.env ~/.config/infisical/.env
 
 start:
