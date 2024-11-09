@@ -16,6 +16,12 @@ start:
 clean:
 	rm -f bin/$(NAME)
 
+fmt:
+	go fmt ./...
+
+test:
+	go test -v ./...
+
 move:
 	sudo mv bin/$(NAME) /usr/local/bin
 
