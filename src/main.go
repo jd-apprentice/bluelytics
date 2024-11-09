@@ -23,7 +23,7 @@ func main() {
 
 	config := fn.CreateConfigMap(secrets)
 
-	data, err := fn.GetData(config["BLUELYTICS_API_ENDPOINT"])
+	data, err := fn.GetData(config["API_ENDPOINT"])
 
 	if err != nil {
 		handlers.LogFatalFmt(consts.FailedFetch, err)

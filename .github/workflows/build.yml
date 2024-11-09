@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [ "master", "develop" ]
 
+env:
+  ENVIRONMENT: if [ ${{ github.ref }} == 'refs/heads/develop' ]; then echo 'dev'; else echo 'prod'; fi
+
 jobs:
 
   build:
@@ -17,6 +20,36 @@ jobs:
       uses: actions/setup-go@v4
       with:
         go-version: '1.20'
+
+    - name: Install dependencies
+      run: apt update && apt install -y jq curl
+    
+    - name: Get Access Token
+      id: access-token
+      run: |
+        TOKEN=$(curl --request POST \
+          --url https://us.infisical.com/api/v1/auth/universal-auth/login \
+          --header 'Content-Type: application/json' \
+          --data '{
+            "clientId": "'${{ secrets.INFISICAL_CLIENT_ID }}'",
+            "clientSecret": "'${{ secrets.INFISICAL_CLIENT_SECRET }}'"
+          }' | jq -r .accessToken)
+        echo "$TOKEN" > "$GITHUB_OUTPUT"
+    
+    - name: Get all environment variables
+      id: env
+      run: |
+        SECRETS=$(curl --request GET \
+          --url "https://us.infisical.com/api/v3/secrets/raw?workspaceId=${{ secrets.INFISICAL_WORKSPACE_ID }}&environment=${{ env.ENVIRONMENT }}" \
+          --header 'Authorization: Bearer ${{ steps.access-token.outputs.token }}' | jq -r .secrets)
+          
+        for secret in $SECRETS; do
+          secret_name=$(echo $secret | jq -r .secretKey)
+          secret_value=$(echo $secret | jq -r .secretValue)
+          echo "$secret_name=$secret_value" >> .env
+        done
+
+        echo "Enviroment variables updated successfully"
 
     - name: Build
       run: make build
