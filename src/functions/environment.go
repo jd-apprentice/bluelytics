@@ -4,27 +4,21 @@ import (
 	consts "dolar/src/constants"
 	"dolar/src/types"
 	handlers "dolar/src/utils"
-	"log"
 	"os"
+	"strings"
 
 	"github.com/joho/godotenv"
 )
 
-func getUserHome() string {
-	home, err := os.UserHomeDir()
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return home
-}
-
 func InitDotEnv() {
 
-	home := getUserHome()
+	var environment = os.Getenv("INFISICAL_ENVIRONMENT")
 
-	err := godotenv.Load(home + consts.EnvPath)
+	if strings.ToUpper(environment) == "DEV" {
+		return
+	}
+
+	err := godotenv.Load()
 	if err != nil {
 		handlers.LogFatalFmt(consts.FailedFetch, err)
 	}

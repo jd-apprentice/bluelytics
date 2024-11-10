@@ -2,13 +2,11 @@ NAME ?= bluelytics
 
 all: clean build move start
 
-build: clean
-	if [ ! -e ~/.config/infisical/.env ]; then $(MAKE) generate_config; fi
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o bin/$(NAME) src/main.go
+dev:
+	go run src/main.go
 
-generate_config:
-	mkdir -p ~/.config/infisical
-	ln -s $(PWD)/.env ~/.config/infisical/.env
+build: clean
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o bin/$(NAME) src/main.go
 
 start:
 	$(NAME)

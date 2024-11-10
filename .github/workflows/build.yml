@@ -16,7 +16,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v4
       with:
-        go-version: '1.23.2'
+        go-version: '1.23'
 
     - name: Install dependencies
       run: sudo apt update && sudo apt install -y jq curl
@@ -43,7 +43,7 @@ jobs:
         fi
 
         curl --request GET \
-          --url "https://us.infisical.com/api/v3/secrets/raw?workspaceId=${{ secrets.INFISICAL_WORKSPACE_ID }}&environment=prod" \
+          --url "https://us.infisical.com/api/v3/secrets/raw?workspaceId=${{ secrets.INFISICAL_WORKSPACE_ID }}&environment=${{ env.infisical_env }}" \
           --header 'Authorization: Bearer ${{ env.access_token }}' \
           --header 'Content-Type: application/json' \
           > secrets

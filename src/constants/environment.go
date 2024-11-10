@@ -1,5 +1,5 @@
 package constants
 
 const (
-	EnvPath = "/.config/infisical/.env"
+	EnvPath = ".env"
 )

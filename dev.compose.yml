@@ -1,0 +1,14 @@
+services:
+  bluelytics_dev:
+    build: 
+      context: .
+      dockerfile: dev.Dockerfile
+      target: development
+    security_opt: 
+      - no-new-privileges
+    container_name: bluelytics_dev
+    restart: unless-stopped
+    env_file:
+      - .env.dev
+    volumes:
+      - .:/app
