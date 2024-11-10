@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [ "master", "develop" ]
 
+env:
+  infisical_env: dev
+
 jobs:
 
   build:
@@ -36,9 +39,8 @@ jobs:
     - name: Get all environment variables
       id: env
       run: |
-        echo "infisical_env=dev" >> $GITHUB_ENV
-
-        if [ ! "${GITHUB_REF}" == "refs/heads/develop" ]; then
+        if [ "${{ github.ref }}" == "refs/heads/master" ]; then
+          echo "Current branch is not develop"
           echo "infisical_env=prod" >> $GITHUB_ENV
         fi
 
